@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNAKE GAMER</title>
+  </head>
+  <body>
+    <canvas id="stage" width="400" height="400"></canvas>
+    <script>
+      window.onload = function () {
+        var stage = document.getElementById("stage"); //aqui ele aponta pro canvas
+        var ctx = stage.getContext("2d"); // aqui ele transforma o ctx em um objeto
+        //q nos iremos usar para mudar cores etc no projeto todo
+        document.addEventListener("keydown", keyPush);
+
+        setInterval(game, 60); //aqui nos fazemos a função game ser repetida a cada 60 milisegundos..
+        const velocidade = 1; // aqui é quantas casas ele vai andar... em cada atualização no set
+        var vx = vy = 0; // velocidade em x/ velocidade em y
+        var pCobraAtual_x = 10;
+        var pCobraAtual_y = 15;
+        var tamanho_peca = 20; // é vinte pq decidimos dividir o tabuleiro de 400 por
+        //400 em outras 20 peças e cada peça vai ter 20 em x e 20 em y
+        var q_pecas = 20;
+        var m_atualx = m_atualy = 15; // local onde se encontra a maça
+        var rastro_cobra = [];
+        var calda = 5;
+
+        function game() {
+            pCobraAtual_x += vx;
+            pCobraAtual_y += vy
+          if (pCobraAtual_x < 0) {
+            pCobraAtual_x = q_pecas - 1;
+          } // quando ela chegar no limite de bloco menor q 0 ela vai direto pro limite do outro lado
+          // o mesmo funciona com os demais pontos...
+          if (pCobraAtual_x > q_pecas - 1) {
+            pCobraAtual_x = 0;
+          }
+          if (pCobraAtual_y < 0) {
+            pCobraAtual_y = q_pecas - 1;
+          }
+          if (pCobraAtual_y > q_pecas - 1) {
+            pCobraAtual_y = 0;
+          }
+
+          ctx.fillStyle = "black"; // cor de fundo do objeto inteiro canvas
+          ctx.fillRect(0, 0, stage.width, stage.height); // tamanho x e y inicial
+          // e tamanho x e y final...
+          ctx.fillStyle = "green"; // aqui colocamos a cor da maçã
+          ctx.fillRect(
+            m_atualx * tamanho_peca,
+            m_atualy * tamanho_peca,
+            tamanho_peca,
+            tamanho_peca
+          ); //
+          // nos temos a seguinte consideração os dois primeiros é o local onde vai ser pintado
+          //em x e y e os dois ultimos o tamanho da pintura... na altura e largura
+          ctx.fillStyle = "gray";
+          for (var i = 0; i < rastro_cobra.length; i++) {
+                    ctx.fillRect(rastro_cobra[i].x*tamanho_peca, rastro_cobra[i].y*tamanho_peca, tamanho_peca,tamanho_peca);
+                    if (rastro_cobra[i].x == pCobraAtual_x && rastro_cobra[i].y == pCobraAtual_y)
+                    {
+                        vx = vy=0;
+                        calda =5;
+                    }
+                }
+            rastro_cobra.push({ x: pCobraAtual_x, y: pCobraAtual_y });
+            while (rastro_cobra.length > calda) {
+              rastro_cobra.shift();
+            }
+            if (pCobraAtual_x == m_atualx && pCobraAtual_y == m_atualy) {
+              calda++;
+              m_atualx = Math.floor(Math.random()*q_pecas);
+              m_atualy = Math.floor(Math.random()*q_pecas);
+            }
+        }
+            // movimentação de jogo
+            function keyPush(event) {
+              switch (event.keyCode) {
+                case 37:
+                  vx = -velocidade;
+                  vy = 0;
+                  break;
+                case 38:
+                  vx = 0;
+                  vy = -velocidade;
+                  break;
+                case 39:
+                  vx = velocidade;
+                  vy = 0;
+                  break;
+                case 40:
+                  vx = 0;
+                  vy = velocidade;
+                  break;
+                default:
+                  break;
+              }
+              
+              
+            }    
+            
+        }
+        
+    </script>
+  </body>
+</html>
